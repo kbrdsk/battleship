@@ -1,0 +1,27 @@
+{
+  "name": "battleship",
+  "version": "1.0.0",
+  "description": "battleship project for The Odin Project",
+  "main": "battleship.js",
+  "scripts": {
+    "test": "jest -o",
+    "watch": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/kbrdsk/battleship.git"
+  },
+  "author": "Kabirdas Henry",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kbrdsk/battleship/issues"
+  },
+  "homepage": "https://github.com/kbrdsk/battleship#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^7.5.0",
+    "eslint-plugin-jest": "^23.19.0",
+    "jest": "^26.1.0",
+    "prettier": "^2.0.5"
+  }
+}
