@@ -147,5 +147,8 @@ module.exports = {
 	buildShip,
 	createPlayer,
 	startGame,
+	initializePlayer,
+	placeShips,
+	turn,
 	gameOver,
 };
