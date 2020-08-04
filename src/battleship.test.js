@@ -236,9 +236,9 @@ describe("player", () => {
 		}
 	});
 
-	xit("ai has a ship placement function", () => {
+	it("ai has a ship placement function", () => {
 		const alice = createPlayer("defaultAI", "Alice");
-		expect(alice.placeShips([10, 10])).toBeDefined();
+		expect(alice.placeShips([10, 10])).not.toThrow();
 	});
 });
 

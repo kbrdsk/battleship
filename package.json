@@ -7,7 +7,6 @@
     "test": "jest -o",
     "watch": "jest --watch",
     "build": "webpack --progress -p",
-    "watch": "webpack --progress --watch",
     "server": "webpack-dev-server --open"
   },
   "repository": {
