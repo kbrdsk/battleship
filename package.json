@@ -22,6 +22,7 @@
     "eslint": "^7.5.0",
     "eslint-plugin-jest": "^23.19.0",
     "jest": "^26.1.0",
-    "prettier": "^2.0.5"
+    "prettier": "^2.0.5",
+    "sublime-js-prettier": "^1.30.7"
   }
 }
