@@ -5,14 +5,8 @@ const {
 	turn,
 	gameOver,
 } = require("./battleship.js");
-//const { updateView } = require("./view.js");
 
 let playerType, nextButton, gameFunction, gameState, activePlayer;
-
-/*
-let mouseHold;
-window.addEventListener("onmousedown", () => {mouseHold = true;})
-window.addEventListener("onmouseup", () => {mouseHold = false});*/
 
 const gamePhase = new Map([
 	[startGame, { nextFunction: startNewGame, phaseName: "newGame" }],
@@ -57,6 +51,8 @@ function reset() {
 	activePlayer = null;
 }
 
+//New Game
+
 function startNewGame() {
 	gameState = {};
 	startGame(gameState);
@@ -64,6 +60,8 @@ function startNewGame() {
 	updateNextButton();
 	activePlayer = "firstPlayer";
 }
+
+//Player Creation
 
 function submitPlayerInfo() {
 	initializePlayer(
@@ -88,6 +86,8 @@ function submitPlayerInfo() {
 	}
 }
 
+//Ship Placement
+
 function submitShipPlacementInfo() {
 	placeShips(gameState, gameState[activePlayer], playerShipLocations);
 	playerShipLocations = [];
@@ -100,6 +100,32 @@ function submitShipPlacementInfo() {
 		updateNextButton();
 	}
 }
+
+let currentShipStart;
+let playerShipLocations = [];
+
+function addShipLocation(start, length, axis, direction) {
+	const shipCoords = [start];
+	let currentCoord = [...start];
+	for (let i = 0; i < length; i++) {
+		currentCoord = [...currentCoord];
+		currentCoord[axis] += direction;
+		shipCoords.push(currentCoord);
+	}
+	playerShipLocations.push(shipCoords);
+}
+
+function submitShipCreation(x, y) {
+	const xDelta = x - currentShipStart[0];
+	const yDelta = y - currentShipStart[1];
+	const axis = Math.abs(xDelta) < Math.abs(yDelta) ? 1 : 0;
+	const delta = Math.abs(xDelta) < Math.abs(yDelta) ? yDelta : xDelta;
+	const length = Math.abs(delta);
+	const direction = delta / Math.abs(delta);
+	addShipLocation(currentShipStart, length, axis, direction);
+}
+
+//Turns
 
 function submitAttack(x, y) {
 	try {
@@ -114,6 +140,8 @@ function submitAttack(x, y) {
 		else throw err;
 	}
 }
+
+//DOM object creation
 
 function updateNextButton() {
 	nextButton = document.createElement("button");
@@ -140,30 +168,6 @@ function createBoard(width, height) {
 		}
 	}
 	return board;
-}
-
-let currentShipStart;
-let playerShipLocations = [];
-
-function addShipLocation(start, length, axis, direction) {
-	const shipCoords = [start];
-	let currentCoord = [...start];
-	for (let i = 0; i < length; i++) {
-		currentCoord = [...currentCoord];
-		currentCoord[axis] += direction;
-		shipCoords.push(currentCoord);
-	}
-	playerShipLocations.push(shipCoords);
-}
-
-function submitShipCreation(x, y) {
-	const xDelta = x - currentShipStart[0];
-	const yDelta = y - currentShipStart[1];
-	const axis = Math.abs(xDelta) < Math.abs(yDelta) ? 1 : 0;
-	const delta = Math.abs(xDelta) < Math.abs(yDelta) ? yDelta : xDelta;
-	const length = Math.abs(delta);
-	const direction = delta / Math.abs(delta);
-	addShipLocation(currentShipStart, length, axis, direction);
 }
 
 function createBoardSquare(x, y) {
