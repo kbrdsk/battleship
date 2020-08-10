@@ -4,7 +4,7 @@
   "description": "battleship project for The Odin Project",
   "private": true,
   "scripts": {
-    "test": "jest -o",
+    "test": "jest -all --coverage",
     "watch": "jest --watch",
     "build": "webpack --progress -p",
     "server": "webpack-dev-server --open"
