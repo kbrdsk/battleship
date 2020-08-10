@@ -32,11 +32,6 @@ battleship.turn.mockImplementation((game, player, attackCoords) => {
 	return battleship.turn;
 });
 
-afterEach(() => {
-	adapter.reset();
-	jest.resetAllMocks();
-});
-
 function selectShip(board, startPosition, length, axis, direction) {
 	const currentPosition = { ...startPosition };
 	board[startPosition.x][startPosition.y].dispatchEvent(
@@ -76,6 +71,50 @@ function changeLocation(board, startPosition, endPosition) {
 	}
 	return currentPosition;
 }
+
+afterEach(() => {
+	adapter.reset();
+	jest.clearAllMocks();
+});
+
+test("game ends when receiving game over function", () => {
+	const newGameButton = adapter.newGameButton;
+	newGameButton.click();
+
+	const game = battleship.startGame.mock.calls[0][0];
+	game.firstPlayer = "first player dummy";
+	game.secondPlayer = "second player dummy";
+
+	adapter.playerNameInput.value = "Boyega";
+	adapter.playerTypeSelection[0].click();
+	adapter.nextButton.click();
+
+	adapter.playerNameInput.value = "Alice";
+	adapter.playerTypeSelection[0].click();
+	adapter.nextButton.click();
+
+	const board = adapter.activeBoard;
+
+	board[0][0].dispatchEvent(new MouseEvent("mouseenter"));
+	let currentPosition = { x: 0, y: 0 };
+	currentPosition = selectShip(board, currentPosition, 3, "x", 1);
+	adapter.nextButton.click();
+
+	currentPosition = { x: 5, y: 2 };
+	currentPosition = selectShip(board, currentPosition, 3, "x", 1);
+	selectShip(board, currentPosition, 2, "y", -1);
+	adapter.nextButton.click();
+
+	board[1][0].click();
+	board[5][2].click();
+	board[2][0].click();
+	board[9][9].click();
+	battleship.turn.mockReturnValueOnce(battleship.gameOver);
+	board[3][0].click();
+
+	expect(adapter.phase).toBe("gameOver");
+
+})
 
 test("launching an invalid attack does not change active player", () => {
 	const newGameButton = adapter.newGameButton;

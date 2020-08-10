@@ -103,7 +103,7 @@ function submitShipPlacementInfo() {
 
 function submitAttack(x, y) {
 	try {
-		turn(gameState, gameState[activePlayer], [x, y]);
+		gameFunction = turn(gameState, gameState[activePlayer], [x, y]);
 		activePlayer =
 			activePlayer === "firstPlayer" ? "secondPlayer" : "firstPlayer";
 	} catch (err) {
