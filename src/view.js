@@ -29,10 +29,12 @@ function drawNewGame() {
 }
 
 function drawPlayerCreation() {
-	document.body.appendChild(adapter.playerNameInput);
+	const playerTypeSelection = document.createElement("div");
 	for (let selection of adapter.playerTypeSelection) {
-		document.body.appendChild(selection);
+		playerTypeSelection.appendChild(selection);
 	}
+	document.body.appendChild(adapter.playerNameInput);
+	document.body.appendChild(playerTypeSelection);
 	document.body.appendChild(nextButton());
 }
 
@@ -57,6 +59,7 @@ function updateView() {
 
 function drawBoard() {
 	const boardContainer = document.createElement("div");
+	boardContainer.classList.add("board-container");
 	adapter.activeBoard.map((column) => {
 		column.map((boardSquare) => {
 			if (!boardSquare.classList.contains("board-square")) {
