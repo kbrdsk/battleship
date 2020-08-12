@@ -15,21 +15,25 @@ jest.mock("./battleship.js", () => {
 
 const battleship = require("./battleship.js");
 
-battleship.startGame.mockImplementation(() => battleship.initializePlayer);
+battleship.startGame.mockImplementation(() => (...args) =>
+	battleship.initializePlayer(...args)
+);
 battleship.initializePlayer.mockImplementation((...[, player]) =>
 	player === "firstPlayer"
-		? battleship.initializePlayer
-		: battleship.placeShips
+		? (...args) => battleship.initializePlayer(...args)
+		: (...args) => battleship.placeShips(...args)
 );
 battleship.placeShips.mockImplementation((...[, player]) =>
-	player === "firstPlayer" ? battleship.placeShips : battleship.turn
+	player === "firstPlayer"
+		? (...args) => battleship.placeShips(...args)
+		: (...args) => battleship.turn(...args)
 );
 battleship.turn.mockImplementation((game, player, attackCoords) => {
 	if (!game[player]) game[player] = { attackedSquares: [] };
 	if (game[player].attackedSquares.includes(attackCoords.toString()))
 		throw "Square has already been attacked";
 	game[player].attackedSquares.push(attackCoords.toString());
-	return battleship.turn;
+	return (...args) => battleship.turn(...args);
 });
 
 function selectShip(board, startPosition, length, axis, direction) {
@@ -113,8 +117,7 @@ test("game ends when receiving game over function", () => {
 	board[3][0].click();
 
 	expect(adapter.phase).toBe("gameOver");
-
-})
+});
 
 test("launching an invalid attack does not change active player", () => {
 	const newGameButton = adapter.newGameButton;
