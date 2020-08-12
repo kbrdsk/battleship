@@ -33,6 +33,7 @@ function drawPlayerCreation() {
 	const playerTypes = ["defaultAI", "human"];
 	for (let selection of adapter.playerTypeSelection) {
 		selection.textContent = playerTypes.pop();
+		selection.classList.add("player-type-selection-button");
 		playerTypeSelection.appendChild(selection);
 	}
 	document.body.appendChild(adapter.playerNameInput);

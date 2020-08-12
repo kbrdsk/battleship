@@ -10,7 +10,7 @@ body[attacking=true]{
 
 button{
 	border: none;
-	padding: 2% 3%;
+	padding: .5em 1em;
 }
 
 .board-container{
