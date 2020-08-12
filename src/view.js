@@ -105,7 +105,9 @@ function updateShipPlacementView(x, y) {
 		const direction = delta / Math.abs(delta);
 		let currentCoord = [...shipPlacementAnchor];
 		for (let i = 0; i <= length; i++) {
-			adapter.activeBoard[currentCoord[0]][currentCoord[1]].classList.add(
+			const square = adapter.activeBoard[currentCoord[0]][currentCoord[1]];
+			if(square.classList.contains("ship-indicator")) break;
+			square.classList.add(
 				"ship-placement-indicator"
 			);
 			currentCoord[axis] += direction;
