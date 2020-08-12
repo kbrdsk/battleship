@@ -4,6 +4,7 @@ const {
 	placeShips,
 	turn,
 	gameOver,
+	nullShip,
 } = require("./battleship.js");
 
 let playerType, nextButton, gameFunction, gameState, activePlayer;
@@ -110,6 +111,16 @@ function addShipLocation(start, length, axis, direction) {
 	for (let i = 0; i < length; i++) {
 		currentCoord = [...currentCoord];
 		currentCoord[axis] += direction;
+		if (
+			playerShipLocations.some((shipLocation) =>
+				shipLocation.some(
+					(square) =>
+						square[0] === currentCoord[0] &&
+						square[1] === currentCoord[1]
+				)
+			)
+		)
+			break;
 		shipCoords.push(currentCoord);
 	}
 	playerShipLocations.push(shipCoords);
@@ -129,7 +140,7 @@ function submitShipCreation(x, y) {
 
 function submitAttack(x, y) {
 	try {
-		if(turn(gameState, gameState[activePlayer], [x, y]) === gameOver)
+		if (turn(gameState, gameState[activePlayer], [x, y]) === gameOver)
 			gameFunction = gameOver;
 		activePlayer =
 			activePlayer === "firstPlayer" ? "secondPlayer" : "firstPlayer";
@@ -175,8 +186,8 @@ function createBoardSquare(x, y) {
 	const square = document.createElement("div");
 	Object.assign(square, { x, y });
 	square.addEventListener("click", () => {
-		if(gameFunction === turn ) submitAttack(x, y);
-	})
+		if (gameFunction === turn) submitAttack(x, y);
+	});
 	square.addEventListener("mouseup", () => {
 		if (gameFunction === placeShips) submitShipCreation(x, y);
 	});

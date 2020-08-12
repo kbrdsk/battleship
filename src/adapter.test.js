@@ -81,6 +81,54 @@ afterEach(() => {
 	jest.clearAllMocks();
 });
 
+test(
+	"selecting squares for ship placement stops" +
+		" when another ship is reached",
+	() => {
+		const newGameButton = adapter.newGameButton;
+		newGameButton.click();
+
+		const game = battleship.startGame.mock.calls[0][0];
+
+		adapter.playerNameInput.value = "Boyega";
+		adapter.playerTypeSelection[0].click();
+		adapter.nextButton.click();
+
+		adapter.playerNameInput.value = "Alice";
+		adapter.playerTypeSelection[0].click();
+		adapter.nextButton.click();
+
+		const board = adapter.activeBoard;
+
+		board[0][0].dispatchEvent(new MouseEvent("mouseenter"));
+		let currentPosition = { x: 5, y: 5 };
+		currentPosition = selectShip(board, currentPosition, 4, "x", 1);
+		currentPosition = changeLocation(board, currentPosition, {
+			x: 7,
+			y: 7,
+		});
+		selectShip(board, currentPosition, 5, "y", -1);
+		adapter.nextButton.click();
+
+		expect(battleship.placeShips.mock.calls[0]).toEqual([
+			game,
+			game.firstPlayer,
+			[
+				[
+					[5, 5],
+					[6, 5],
+					[7, 5],
+					[8, 5]
+				],
+				[
+					[7, 7],
+					[7, 6],
+				],
+			],
+		]);
+	}
+);
+
 test("game ends when receiving game over function", () => {
 	const newGameButton = adapter.newGameButton;
 	newGameButton.click();
@@ -262,7 +310,7 @@ test("clicking next at second player ship placement sets phase to turn", () => {
 });
 
 test(
-	"submitting ships for at second player ship placement" +
+	"submitting ships at second player ship placement" +
 		"correctly assigns them to second player",
 	() => {
 		const newGameButton = adapter.newGameButton;

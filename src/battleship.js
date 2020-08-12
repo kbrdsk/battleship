@@ -151,4 +151,5 @@ module.exports = {
 	placeShips,
 	turn,
 	gameOver,
+	nullShip
 };
