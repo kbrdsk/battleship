@@ -129,7 +129,8 @@ function submitShipCreation(x, y) {
 
 function submitAttack(x, y) {
 	try {
-		gameFunction = turn(gameState, gameState[activePlayer], [x, y]);
+		if(turn(gameState, gameState[activePlayer], [x, y]) === gameOver)
+			gameFunction = gameOver;
 		activePlayer =
 			activePlayer === "firstPlayer" ? "secondPlayer" : "firstPlayer";
 	} catch (err) {
