@@ -53,7 +53,8 @@ function initializeBoard(board) {
 		column.map((boardSquare, y) => {
 			boardSquare.classList.add("board-square");
 			boardSquare.addEventListener("click", (e) => {
-				if (adapter.phase === "turn") updateTurnView(e.target, x, y);
+				if (adapter.phase === "turn" || adapter.phase === "gameOver")
+					updateTurnView(e.target, x, y);
 			});
 			boardSquare.addEventListener("mousedown", () => {
 				if (adapter.phase === "shipPlacement") {
@@ -171,6 +172,12 @@ function updateTurnView(boardSquare, x, y) {
 }
 
 function drawGameOver() {
+	const winner =
+		adapter.activePlayer === "firstPlayer" ? "secondPlayer" : "firstPlayer";
+	alert(
+		`Game Over!\n` +
+			`${adapter.gameState[winner].playerName} wins!`
+	);
 	document.body.appendChild(newGameButton);
 }
 
