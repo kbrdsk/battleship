@@ -62,7 +62,11 @@ function initializeBoard(board) {
 				}
 			});
 			boardSquare.addEventListener("mouseup", () => {
-				if (adapter.phase === "shipPlacement") endShipIndicator(x, y);
+				if (
+					adapter.phase === "shipPlacement" &&
+					activePlacementIndicator
+				)
+					endShipIndicator();
 			});
 			boardSquare.addEventListener("mouseenter", () => {
 				if (adapter.phase === "shipPlacement")
@@ -94,6 +98,13 @@ function drawShipPlacement() {
 let shipPlacementAnchor = [];
 let activePlacementIndicator = false;
 
+document.addEventListener("mouseup", () => {
+	if (adapter.phase === "shipPlacement" && activePlacementIndicator) {
+		clearShipIndicator();
+		endShipIndicator();
+	}
+});
+
 function updateShipPlacementView(x, y) {
 	clearShipIndicator();
 	if (activePlacementIndicator) {
@@ -105,11 +116,10 @@ function updateShipPlacementView(x, y) {
 		const direction = delta / Math.abs(delta);
 		let currentCoord = [...shipPlacementAnchor];
 		for (let i = 0; i <= length; i++) {
-			const square = adapter.activeBoard[currentCoord[0]][currentCoord[1]];
-			if(square.classList.contains("ship-indicator")) break;
-			square.classList.add(
-				"ship-placement-indicator"
-			);
+			const square =
+				adapter.activeBoard[currentCoord[0]][currentCoord[1]];
+			if (square.classList.contains("ship-indicator")) break;
+			square.classList.add("ship-placement-indicator");
 			currentCoord[axis] += direction;
 		}
 	}
