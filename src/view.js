@@ -55,15 +55,19 @@ function initializeBoard(board) {
 			boardSquare.addEventListener("click", (e) => {
 				if (adapter.phase === "turn") updateTurnView(e.target, x, y);
 			});
-			boardSquare.addEventListener("mousedown", () =>
-				startShipIndicator(x, y)
-			);
-			boardSquare.addEventListener("mouseup", () =>
-				endShipIndicator(x, y)
-			);
-			boardSquare.addEventListener("mouseenter", () =>
-				updateShipPlacementView(x, y)
-			);
+			boardSquare.addEventListener("mousedown", () => {
+				if (adapter.phase === "shipPlacement") {
+					startShipIndicator(x, y);
+					updateShipPlacementView(x, y);
+				}
+			});
+			boardSquare.addEventListener("mouseup", () => {
+				if (adapter.phase === "shipPlacement") endShipIndicator(x, y);
+			});
+			boardSquare.addEventListener("mouseenter", () => {
+				if (adapter.phase === "shipPlacement")
+					updateShipPlacementView(x, y);
+			});
 		});
 	});
 	board.initialized = true;
