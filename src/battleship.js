@@ -90,8 +90,78 @@ const attackFunctions = {
 	},
 };
 
+const shipLocationGenerators = {
+	human: () => {},
+	defaultAI: ([width, height]) => {
+		const shipLocations = [];
+		for (let length of [5, 4, 3, 3, 2]) {
+			const validLocations = findValidShipLocations(
+				width,
+				height,
+				length,
+				shipLocations
+			);
+			const direction = Math.floor(Math.random() * 2);
+			const directionName = ["horizontal", "vertical"][direction];
+			const locationIndex = Math.floor(
+				Math.random() * validLocations[directionName].length
+			);
+			const start = validLocations[directionName][locationIndex];
+			const location = [];
+			for (let i = 0; i < length; i++) {
+				const coordinate = [...start];
+				coordinate[direction] += i;
+				location.push(coordinate);
+			}
+			shipLocations.push(location);
+		}
+		return shipLocations;
+	},
+};
+
+function findValidShipLocations(
+	boardWidth,
+	boardHeight,
+	length,
+	occupiedLocations
+) {
+	const occupiedSquares = occupiedLocations.flatMap((location) => location);
+	const validShipLocations = { horizontal: [], vertical: [] };
+	for (let i = 0; i < boardWidth; i++) {
+		const occupiedInColumn = occupiedSquares
+			.filter((square) => square[0] === i)
+			.map((square) => square[1]);
+		for (let j = 0; j < boardHeight; j++) {
+			if (
+				occupiedInColumn.every(
+					(index) => index < j || index > j + length - 1
+				)
+			)
+				validShipLocations.vertical.push([i, j]);
+		}
+	}
+	for (let i = 0; i < boardHeight; i++) {
+		const occupiedInRow = occupiedSquares
+			.filter((square) => square[1] === i)
+			.map((square) => square[0]);
+		for (let j = 0; j < boardWidth; j++) {
+			if (
+				occupiedInRow.every(
+					(index) => index < j || index > j + length - 1
+				)
+			)
+				validShipLocations.horizontal.push([j, i]);
+		}
+	}
+	return validShipLocations;
+}
+
 function createPlayer(playerType, playerName) {
-	return { playerName, launchAttack: attackFunctions[playerType] };
+	return {
+		playerName,
+		launchAttack: attackFunctions[playerType],
+		generateShipLocations: shipLocationGenerators[playerType],
+	};
 }
 
 //Game Loop
@@ -151,5 +221,5 @@ module.exports = {
 	placeShips,
 	turn,
 	gameOver,
-	nullShip
+	nullShip,
 };

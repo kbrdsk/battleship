@@ -238,7 +238,45 @@ describe("player", () => {
 
 	it("ai has a ship placement function", () => {
 		const alice = createPlayer("defaultAI", "Alice");
-		expect(alice.placeShips([10, 10])).not.toThrow();
+		expect(() => alice.generateShipLocations([10, 10])).not.toThrow();
+	});
+
+	it("ai places ships of lengths 5, 4, 3, 3, and 2", () => {
+		const alice = createPlayer("defaultAI", "Alice");
+		const shipLocations = alice.generateShipLocations([10, 10]);
+		expect(shipLocations.length).toBe(5);
+		expect(shipLocations.map((location) => location.length)).toEqual(
+			expect.arrayContaining([5, 4, 3, 2])
+		);
+		expect(
+			shipLocations.filter((location) => location.length === 3).length
+		).toEqual(2);
+	});
+
+	it("ai ships do not overlap", () => {
+		const alice = createPlayer("defaultAI", "Alice");
+		for (let i = 0; i < 10; i++) {
+			const usedSquares = [];
+			const shipLocations = alice.generateShipLocations([10, 10]);
+			shipLocations.map((location) =>
+				location.map((shipSquare) => {
+					usedSquares.map((square) => {
+						expect(square).not.toEqual(shipSquare);
+					});
+					usedSquares.push(shipSquare);
+				})
+			);
+		}
+	});
+
+	it("ai ship placement function has different outputs", () => {
+		const alice = createPlayer("defaultAI", "Alice");
+		const shipLocations = alice.generateShipLocations([10, 10]);
+		for (let i = 0; i < 10; i++) {
+			expect(alice.generateShipLocations([10, 10])).not.toEqual(
+				shipLocations
+			);
+		}
 	});
 });
 
