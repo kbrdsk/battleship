@@ -30,7 +30,9 @@ function drawNewGame() {
 
 function drawPlayerCreation() {
 	const playerTypeSelection = document.createElement("div");
+	const playerTypes = ["defaultAI", "human"];
 	for (let selection of adapter.playerTypeSelection) {
+		selection.textContent = playerTypes.pop();
 		playerTypeSelection.appendChild(selection);
 	}
 	document.body.appendChild(adapter.playerNameInput);
@@ -58,17 +60,26 @@ function updateView() {
 }
 
 function drawBoard() {
+	const board = adapter.activeBoard;
+	if(!board.initialized) initializeBoard(board)
 	const boardContainer = document.createElement("div");
 	boardContainer.classList.add("board-container");
-	adapter.activeBoard.map((column) => {
+	board.map((column) => {
 		column.map((boardSquare) => {
-			if (!boardSquare.classList.contains("board-square")) {
-				boardSquare.classList.add("board-square");
-			}
 			boardContainer.appendChild(boardSquare);
 		});
 	});
 	document.body.appendChild(boardContainer);
+}
+
+function initializeBoard(board){
+	board.map((column) => {
+		column.map((boardSquare) => {
+			boardSquare.classList.add("board-square");
+			boardSquare.addEventListener("click", updateView);
+		});
+	});
+	board.initialized = true;
 }
 
 module.exports = updateView;
