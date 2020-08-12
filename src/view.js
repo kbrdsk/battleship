@@ -87,13 +87,13 @@ function initializeBoard(board) {
 
 function attackUpdate(boardSquare, x, y) {
 	document.body.setAttribute("attacking", true);
-	setTimeout(() => {
+	if (!boardSquare.getAttribute("hit-status")) {
 		boardSquare.setAttribute(
 			"hit-status",
 			adapter.gameState[adapter.activePlayer].gameboard.boardState[x][y]
 				.hitStatus
 		);
-	});
+	}
 	setTimeout(() => {
 		document.body.setAttribute("attacking", false);
 		updateView();
