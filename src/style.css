@@ -4,6 +4,10 @@ body{
 	align-items: center;
 }
 
+body[attacking=true]{
+	pointer-events: none;
+}
+
 button{
 	border: none;
 	padding: 2% 3%;
@@ -20,6 +24,14 @@ button{
 
 .board-square{
 	background-color: blue;
+}
+
+.board-square[hit-status=miss]{
+	background-color: grey;
+}
+
+.board-square[hit-status=hit]{
+	background-color: red;
 }
 
 .new-game-button{

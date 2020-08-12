@@ -61,7 +61,7 @@ function updateView() {
 
 function drawBoard() {
 	const board = adapter.activeBoard;
-	if(!board.initialized) initializeBoard(board)
+	if (!board.initialized) initializeBoard(board);
 	const boardContainer = document.createElement("div");
 	boardContainer.classList.add("board-container");
 	board.map((column) => {
@@ -72,14 +72,31 @@ function drawBoard() {
 	document.body.appendChild(boardContainer);
 }
 
-function initializeBoard(board){
-	board.map((column) => {
-		column.map((boardSquare) => {
+function initializeBoard(board) {
+	board.map((column, x) => {
+		column.map((boardSquare, y) => {
 			boardSquare.classList.add("board-square");
-			boardSquare.addEventListener("click", updateView);
+			boardSquare.addEventListener("click", (e) =>
+				attackUpdate(e.target, x, y)
+			);
 		});
 	});
 	board.initialized = true;
+}
+
+function attackUpdate(boardSquare, x, y) {
+	document.body.setAttribute("attacking", true);
+	setTimeout(() => {
+		boardSquare.setAttribute(
+			"hit-status",
+			adapter.gameState[adapter.activePlayer].gameboard.boardState[x][y]
+				.hitStatus
+		);
+	});
+	setTimeout(() => {
+		document.body.setAttribute("attacking", false);
+		updateView();
+	}, 1500);
 }
 
 module.exports = updateView;
