@@ -8,7 +8,9 @@
 		<script src="./bundle.js"></script>
 		<script type="text/javascript">
 			document.querySelector(".new-game-button").click();
+			const playerNames = ["Boyega", "Alice"];
 			for (let i = 0; i < 2; i++) {
+				document.querySelector("input").value = playerNames.pop();
 				document.querySelector(".player-type-selection-button").click();
 				document.querySelector(".next-button").click();
 			}
