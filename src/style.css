@@ -13,6 +13,10 @@ button{
 	padding: .5em 1em;
 }
 
+.new-game-button{
+
+}
+
 .board-container{
 	display: grid;
 	grid-template-rows: repeat(10, 1fr);
@@ -26,18 +30,22 @@ button{
 	background-color: blue;
 }
 
+.ship-placement-indicator{
+	background-color: violet;
+}
+
+body[phase=shipPlacement] .ship-indicator{
+	background-color: purple;
+}
+
+.next-button{
+
+}
+
 .board-square[hit-status=miss]{
 	background-color: grey;
 }
 
 .board-square[hit-status=hit]{
 	background-color: red;
-}
-
-.new-game-button{
-
-}
-
-.next-button{
-
 }

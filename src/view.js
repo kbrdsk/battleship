@@ -24,6 +24,13 @@ const draw = {
 	gameOver: drawGameOver,
 };
 
+function updateView() {
+	document.body.innerHTML = "";
+	document.body.setAttribute("phase", adapter.phase);
+	draw[adapter.phase]();
+	console.log(adapter.phase);
+}
+
 function drawNewGame() {
 	document.body.appendChild(newGameButton);
 }
@@ -41,23 +48,25 @@ function drawPlayerCreation() {
 	document.body.appendChild(nextButton());
 }
 
-function drawShipPlacement() {
-	drawBoard();
-	document.body.appendChild(nextButton());
-}
-
-function drawTurn() {
-	drawBoard();
-}
-
-function drawGameOver() {
-	document.body.appendChild(newGameButton);
-}
-
-function updateView() {
-	document.body.innerHTML = "";
-	draw[adapter.phase]();
-	console.log(adapter.phase);
+function initializeBoard(board) {
+	board.map((column, x) => {
+		column.map((boardSquare, y) => {
+			boardSquare.classList.add("board-square");
+			boardSquare.addEventListener("click", (e) => {
+				if (adapter.phase === "turn") updateTurnView(e.target, x, y);
+			});
+			boardSquare.addEventListener("mousedown", () =>
+				startShipIndicator(x, y)
+			);
+			boardSquare.addEventListener("mouseup", () =>
+				endShipIndicator(x, y)
+			);
+			boardSquare.addEventListener("mouseenter", () =>
+				updateShipPlacementView(x, y)
+			);
+		});
+	});
+	board.initialized = true;
 }
 
 function drawBoard() {
@@ -73,19 +82,64 @@ function drawBoard() {
 	document.body.appendChild(boardContainer);
 }
 
-function initializeBoard(board) {
-	board.map((column, x) => {
-		column.map((boardSquare, y) => {
-			boardSquare.classList.add("board-square");
-			boardSquare.addEventListener("click", (e) =>
-				attackUpdate(e.target, x, y)
-			);
-		});
-	});
-	board.initialized = true;
+function drawShipPlacement() {
+	drawBoard();
+	document.body.appendChild(nextButton());
 }
 
-function attackUpdate(boardSquare, x, y) {
+let shipPlacementAnchor = [];
+let activePlacementIndicator = false;
+
+function updateShipPlacementView(x, y) {
+	clearShipIndicator();
+	if (activePlacementIndicator) {
+		const xDelta = x - shipPlacementAnchor[0];
+		const yDelta = y - shipPlacementAnchor[1];
+		const axis = Math.abs(xDelta) < Math.abs(yDelta) ? 1 : 0;
+		const delta = Math.abs(xDelta) < Math.abs(yDelta) ? yDelta : xDelta;
+		const length = Math.abs(delta);
+		const direction = delta / Math.abs(delta);
+		let currentCoord = [...shipPlacementAnchor];
+		for (let i = 0; i <= length; i++) {
+			adapter.activeBoard[currentCoord[0]][currentCoord[1]].classList.add(
+				"ship-placement-indicator"
+			);
+			currentCoord[axis] += direction;
+		}
+	}
+}
+
+function startShipIndicator(x, y) {
+	shipPlacementAnchor = [x, y];
+	activePlacementIndicator = true;
+	updateShipPlacementView();
+}
+
+function endShipIndicator() {
+	shipPlacementAnchor = [];
+	activePlacementIndicator = false;
+	adapter.activeBoard.map((column) =>
+		column.map((square) => {
+			if (square.classList.contains("ship-placement-indicator"))
+				square.classList.add("ship-indicator");
+		})
+	);
+	clearShipIndicator();
+}
+
+function clearShipIndicator() {
+	adapter.activeBoard.map((column) => {
+		column.map((boardSquare) => {
+			boardSquare.classList.remove("ship-placement-indicator");
+		});
+	});
+}
+
+function drawTurn() {
+	drawBoard();
+}
+
+function updateTurnView(boardSquare, x, y) {
 	document.body.setAttribute("attacking", true);
 	if (!boardSquare.getAttribute("hit-status")) {
 		boardSquare.setAttribute(
@@ -98,6 +152,10 @@ function attackUpdate(boardSquare, x, y) {
 		document.body.setAttribute("attacking", false);
 		updateView();
 	}, 1500);
+}
+
+function drawGameOver() {
+	document.body.appendChild(newGameButton);
 }
 
 module.exports = updateView;
