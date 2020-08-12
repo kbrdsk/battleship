@@ -199,5 +199,11 @@ module.exports = {
 	get nextButton() {
 		return nextButton;
 	},
+	get gameState() {
+		return gameState;
+	},
+	get activePlayer() {
+		return activePlayer;
+	},
 	reset,
 };
