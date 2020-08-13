@@ -140,11 +140,11 @@ function findValidShipLocations(
 				validShipLocations.vertical.push([i, j]);
 		}
 	}
-	for (let i = 0; i < boardHeight - length; i++) {
+	for (let i = 0; i < boardHeight; i++) {
 		const occupiedInRow = occupiedSquares
 			.filter((square) => square[1] === i)
 			.map((square) => square[0]);
-		for (let j = 0; j < boardWidth; j++) {
+		for (let j = 0; j < boardWidth - length; j++) {
 			if (
 				occupiedInRow.every(
 					(index) => index < j || index > j + length - 1

@@ -255,7 +255,7 @@ describe("player", () => {
 
 	it("ai ships do not overlap", () => {
 		const alice = createPlayer("defaultAI", "Alice");
-		for (let i = 0; i < 10; i++) {
+		for (let i = 0; i < 50; i++) {
 			const usedSquares = [];
 			const shipLocations = alice.generateShipLocations([10, 10]);
 			shipLocations.map((location) =>
@@ -272,10 +272,24 @@ describe("player", () => {
 	it("ai ship placement function has different outputs", () => {
 		const alice = createPlayer("defaultAI", "Alice");
 		const shipLocations = alice.generateShipLocations([10, 10]);
-		for (let i = 0; i < 10; i++) {
+		for (let i = 0; i < 50; i++) {
 			expect(alice.generateShipLocations([10, 10])).not.toEqual(
 				shipLocations
 			);
+		}
+	});
+
+	it("ai ship placement does not place ships out of bounds", () => {
+		const alice = createPlayer("defaultAI", "Alice");
+		for (let i = 0; i < 50; i++) {
+			const locations = alice.generateShipLocations([10, 10]);
+			expect(
+				locations.every((location) =>
+					location.every((square) =>
+						square.every((index) => index >= 0 && index < 10)
+					)
+				)
+			).toBe(true);
 		}
 	});
 });
