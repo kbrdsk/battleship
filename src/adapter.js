@@ -165,7 +165,7 @@ function updateNextButton() {
 		gameFunction === placeShips &&
 		gameState[activePlayer].playerType === "defaultAI"
 	)
-		nextButton.click();
+		submitShipPlacementInfo();
 }
 
 function createTypeSelectButton(type) {
