@@ -1,4 +1,5 @@
 const adapter = require("./adapter.js");
+/*const {nullShip} = require("./battleship.js");*/
 
 const newGameButton = (() => {
 	const button = adapter.newGameButton;
@@ -52,7 +53,7 @@ function initializeBoard(board) {
 	board.map((column, x) => {
 		column.map((boardSquare, y) => {
 			boardSquare.classList.add("board-square");
-			boardSquare.addEventListener("click", (e) => {
+			boardSquare.addEventListener("click", () => {
 				if (adapter.phase === "turn" || adapter.phase === "gameOver")
 					updateTurnView(board);
 			});
@@ -158,17 +159,26 @@ function drawTurn() {
 
 function updateTurnView(board) {
 	document.body.setAttribute("attacking", true);
-	board.map((column, x) => column.map((boardSquare, y) => {
-		boardSquare.setAttribute(
-			"hit-status",
-			adapter.gameState[adapter.activePlayer].gameboard.boardState[x][y]
-				.hitStatus
-		);
-	}));
+	board.map((column, x) =>
+		column.map((boardSquare, y) => {
+			boardSquare.setAttribute(
+				"hit-status",
+				adapter.gameState[adapter.activePlayer].gameboard.boardState[x][
+					y
+				].hitStatus
+			);
+			/*if(adapter.gameState[adapter.activePlayer].gameboard.boardState[x][y].ship !== nullShip)
+			boardSquare.classList.add("ship-indicator");*/
+		})
+	);
 	setTimeout(() => {
 		document.body.setAttribute("attacking", false);
 		updateView();
-		if(adapter.gameState[adapter.activePlayer].playerType === "defaultAI") {
+		if (
+			adapter.gameState[adapter.activePlayer].playerType ===
+				"defaultAI" &&
+			adapter.phase === "turn"
+		) {
 			const aiBoard = adapter.activeBoard;
 			adapter.submitAttack();
 			updateTurnView(aiBoard);
@@ -179,10 +189,7 @@ function updateTurnView(board) {
 function drawGameOver() {
 	const winner =
 		adapter.activePlayer === "firstPlayer" ? "secondPlayer" : "firstPlayer";
-	alert(
-		`Game Over!\n` +
-			`${adapter.gameState[winner].playerName} wins!`
-	);
+	alert(`Game Over!\n` + `${adapter.gameState[winner].playerName} wins!`);
 	document.body.appendChild(newGameButton);
 }
 
