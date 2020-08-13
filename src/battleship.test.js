@@ -292,6 +292,26 @@ describe("player", () => {
 			).toBe(true);
 		}
 	});
+
+	it(
+		"ai can place both horizontal and vertical ships" +
+			" on the same board",
+		() => {
+			const alice = createPlayer("defaultAI", "Alice");
+			let i = 0;
+			for (i; i < 50; i++) {
+				const locations = alice.generateShipLocations([10, 10]);
+				const homogeneityTest = locations.reduce((acc, ship) => {
+					let direction =
+						ship[0][0] === ship[1][0] ? "vertical" : "horizontal";
+					acc = !acc ? direction : direction !== acc ? "pass" : acc;
+					return acc;
+				}, undefined);
+				if (homogeneityTest === "pass") break;
+			}
+			expect(i < 49).toBe(true);
+		}
+	);
 });
 
 describe("game loop", () => {
