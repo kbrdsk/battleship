@@ -91,14 +91,14 @@ test("automatically executes ai ship placement for first player", () => {
 	newGameButton.click();
 
 	adapter.playerNameInput.value = "Boyega";
-	adapter.playerTypeSelection[0].click();
-	adapter.nextButton.click();
-
-	adapter.playerNameInput.value = "Alice";
 	adapter.playerTypeSelection[1].click();
 	adapter.nextButton.click();
 
-	expect(battleship.placeShips.mock.calls[0][2].length).toEqual(5);
+	adapter.playerNameInput.value = "Alice";
+	adapter.playerTypeSelection[0].click();
+	adapter.nextButton.click();
+
+	expect(battleship.placeShips.mock.calls[0]).toBeDefined();
 });
 
 test("automatically executes ai ship placement for second player", () => {
@@ -125,7 +125,7 @@ test("automatically executes ai ship placement for second player", () => {
 	selectShip(board, currentPosition, 5, "y", -1);
 	adapter.nextButton.click();
 
-	expect(battleship.placeShips.mock.calls[1][2].length).toEqual(5);
+	expect(battleship.placeShips.mock.calls[1]).toBeDefined();
 });
 
 test(
