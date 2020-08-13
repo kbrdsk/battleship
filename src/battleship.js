@@ -131,7 +131,7 @@ function findValidShipLocations(
 		const occupiedInColumn = occupiedSquares
 			.filter((square) => square[0] === i)
 			.map((square) => square[1]);
-		for (let j = 0; j < boardHeight; j++) {
+		for (let j = 0; j < boardHeight - length; j++) {
 			if (
 				occupiedInColumn.every(
 					(index) => index < j || index > j + length - 1
@@ -140,7 +140,7 @@ function findValidShipLocations(
 				validShipLocations.vertical.push([i, j]);
 		}
 	}
-	for (let i = 0; i < boardHeight; i++) {
+	for (let i = 0; i < boardHeight - length; i++) {
 		const occupiedInRow = occupiedSquares
 			.filter((square) => square[1] === i)
 			.map((square) => square[0]);
