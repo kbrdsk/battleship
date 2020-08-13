@@ -54,7 +54,7 @@ function initializeBoard(board) {
 			boardSquare.classList.add("board-square");
 			boardSquare.addEventListener("click", (e) => {
 				if (adapter.phase === "turn" || adapter.phase === "gameOver")
-					updateTurnView(e.target, x, y);
+					updateTurnView(board);
 			});
 			boardSquare.addEventListener("mousedown", () => {
 				if (adapter.phase === "shipPlacement") {
@@ -156,18 +156,23 @@ function drawTurn() {
 	drawBoard();
 }
 
-function updateTurnView(boardSquare, x, y) {
+function updateTurnView(board) {
 	document.body.setAttribute("attacking", true);
-	if (!boardSquare.getAttribute("hit-status")) {
+	board.map((column, x) => column.map((boardSquare, y) => {
 		boardSquare.setAttribute(
 			"hit-status",
 			adapter.gameState[adapter.activePlayer].gameboard.boardState[x][y]
 				.hitStatus
 		);
-	}
+	}));
 	setTimeout(() => {
 		document.body.setAttribute("attacking", false);
 		updateView();
+		if(adapter.gameState[adapter.activePlayer].playerType === "defaultAI") {
+			const aiBoard = adapter.activeBoard;
+			adapter.submitAttack();
+			updateTurnView(aiBoard);
+		}
 	}, 1500);
 }
 

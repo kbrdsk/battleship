@@ -3,8 +3,7 @@ const {
 	initializePlayer,
 	placeShips,
 	turn,
-	gameOver,
-	nullShip,
+	gameOver
 } = require("./battleship.js");
 
 let playerType, nextButton, gameFunction, gameState, activePlayer;
@@ -222,4 +221,5 @@ module.exports = {
 		return activePlayer;
 	},
 	reset,
+	submitAttack,
 };
