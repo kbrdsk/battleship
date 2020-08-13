@@ -15,14 +15,19 @@ jest.mock("./battleship.js", () => {
 
 const battleship = require("./battleship.js");
 
-battleship.startGame.mockImplementation(() => (...args) =>
-	battleship.initializePlayer(...args)
-);
-battleship.initializePlayer.mockImplementation((...[, player]) =>
-	player === "firstPlayer"
-		? (...args) => battleship.initializePlayer(...args)
-		: (...args) => battleship.placeShips(...args)
-);
+battleship.startGame.mockImplementation((game) => {
+	return (...args) =>
+		battleship.initializePlayer(game, "firstPlayer", ...args);
+});
+battleship.initializePlayer.mockImplementation((game, player, playerType) => {
+	game[player] = Object.create({ playerType });
+	if (player === "firstPlayer")
+		return (...args) =>
+			battleship.initializePlayer(game, "secondPlayer", ...args);
+	else
+		return (...args) =>
+			battleship.placeShips(game, game.firstPlayer, ...args);
+});
 battleship.placeShips.mockImplementation((...[, player]) =>
 	player === "firstPlayer"
 		? (...args) => battleship.placeShips(...args)
@@ -81,6 +86,48 @@ afterEach(() => {
 	jest.clearAllMocks();
 });
 
+test("automatically executes ai ship placement for first player", () => {
+	const newGameButton = adapter.newGameButton;
+	newGameButton.click();
+
+	adapter.playerNameInput.value = "Boyega";
+	adapter.playerTypeSelection[0].click();
+	adapter.nextButton.click();
+
+	adapter.playerNameInput.value = "Alice";
+	adapter.playerTypeSelection[1].click();
+	adapter.nextButton.click();
+
+	expect(battleship.placeShips.mock.calls[0][2].length).toEqual(5);
+});
+
+test("automatically executes ai ship placement for second player", () => {
+	const newGameButton = adapter.newGameButton;
+	newGameButton.click();
+
+	adapter.playerNameInput.value = "Boyega";
+	adapter.playerTypeSelection[0].click();
+	adapter.nextButton.click();
+
+	adapter.playerNameInput.value = "Alice";
+	adapter.playerTypeSelection[1].click();
+	adapter.nextButton.click();
+
+	const board = adapter.activeBoard;
+
+	board[0][0].dispatchEvent(new MouseEvent("mouseenter"));
+	let currentPosition = { x: 5, y: 5 };
+	currentPosition = selectShip(board, currentPosition, 4, "x", 1);
+	currentPosition = changeLocation(board, currentPosition, {
+		x: 7,
+		y: 7,
+	});
+	selectShip(board, currentPosition, 5, "y", -1);
+	adapter.nextButton.click();
+
+	expect(battleship.placeShips.mock.calls[1][2].length).toEqual(5);
+});
+
 test(
 	"selecting squares for ship placement stops" +
 		" when another ship is reached",
@@ -118,7 +165,7 @@ test(
 					[5, 5],
 					[6, 5],
 					[7, 5],
-					[8, 5]
+					[8, 5],
 				],
 				[
 					[7, 7],
