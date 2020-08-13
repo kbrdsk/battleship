@@ -155,6 +155,14 @@ function clearShipIndicator() {
 
 function drawTurn() {
 	drawBoard();
+	if (
+		adapter.gameState[adapter.activePlayer].playerType === "defaultAI" &&
+		adapter.phase === "turn"
+	) {
+		const aiBoard = adapter.activeBoard;
+		adapter.submitAttack();
+		updateTurnView(aiBoard);
+	}
 }
 
 function updateTurnView(board) {
@@ -174,15 +182,6 @@ function updateTurnView(board) {
 	setTimeout(() => {
 		document.body.setAttribute("attacking", false);
 		updateView();
-		if (
-			adapter.gameState[adapter.activePlayer].playerType ===
-				"defaultAI" &&
-			adapter.phase === "turn"
-		) {
-			const aiBoard = adapter.activeBoard;
-			adapter.submitAttack();
-			updateTurnView(aiBoard);
-		}
 	}, 1500);
 }
 
