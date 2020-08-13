@@ -161,6 +161,11 @@ function updateNextButton() {
 		"click",
 		gamePhase.get(gameFunction).nextFunction
 	);
+	if (
+		gameFunction === placeShips &&
+		gameState[activePlayer].playerType === "defaultAI"
+	)
+		nextButton.click();
 }
 
 function createTypeSelectButton(type) {
