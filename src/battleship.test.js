@@ -281,6 +281,34 @@ describe("player", () => {
 });
 
 describe("game loop", () => {
+	it(
+		"calling placeShips for an ai with no arguments" +
+			" automatically places ships",
+		() => {
+			const game = {};
+			const firstBoard = startGame(game);
+			const secondBoard = firstBoard("defaultAI", "Boyega", [20, 20], 1);
+			const placeFirst = secondBoard("human", "Alice", [20, 20], 1);
+			placeFirst();
+
+			expect(game["firstPlayer"].gameboard.shipList.length).toBe(5);
+		}
+	);
+
+	it(
+		"calling placeShips for an ai with empty arguments" +
+			" automatically places ships",
+		() => {
+			const game = {};
+			const firstBoard = startGame(game);
+			const secondBoard = firstBoard("defaultAI", "Boyega", [20, 20], 1);
+			const placeFirst = secondBoard("human", "Alice", [20, 20], 1);
+			placeFirst([]);
+
+			expect(game["firstPlayer"].gameboard.shipList.length).toBe(5);
+		}
+	);
+
 	it("game ends appropriately when first player wins", () => {
 		const game = {};
 		const firstBoard = startGame(game);

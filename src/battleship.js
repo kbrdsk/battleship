@@ -159,6 +159,7 @@ function findValidShipLocations(
 function createPlayer(playerType, playerName) {
 	return {
 		playerName,
+		playerType,
 		launchAttack: attackFunctions[playerType],
 		generateShipLocations: shipLocationGenerators[playerType],
 	};
@@ -187,6 +188,11 @@ function initializePlayer(
 }
 
 function placeShips(game, player, shipLocations) {
+	if (
+		player.playerType === "defaultAI" &&
+		(!shipLocations || shipLocations.length === 0)
+	)
+		shipLocations = player.generateShipLocations([10, 10]);
 	for (let shipCoords of shipLocations) {
 		player.gameboard.placeShip(shipCoords);
 	}
