@@ -11,9 +11,9 @@
 			const playerNames = ["Boyega", "Alice"];
 			for (let i = 0; i < 2; i++) {
 				document.querySelector("input").value = playerNames.pop();
-				document.querySelector(".player-type-selection-button").click();
+				document.getElementsByClassName("player-type-selection-button")[i].click();
 				document.querySelector(".next-button").click();
 			}
-		</script>
+		</script> 
 	</body>
 </html>
