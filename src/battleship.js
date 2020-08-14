@@ -48,6 +48,7 @@ const gameboardPrototype = {
 		square.ship.hit();
 		if (square.ship === nullShip) square.hitStatus = "miss";
 		else square.hitStatus = "hit";
+		updateSunkShips.call(this);
 		return square.hitStatus;
 	},
 
@@ -73,6 +74,12 @@ function buildGameboard(width, height) {
 	gameboard.board = board;
 	gameboard.shipList = [];
 	return gameboard;
+}
+
+function updateSunkShips() {
+	for (let column of this.board)
+		for (let square of column)
+			if (square.ship.isSunk) square.hitStatus = "sunk";
 }
 
 //Player Creation

@@ -191,6 +191,23 @@ describe("gameboard object with ship integration", () => {
 		for (let coord of shipCoords) gameboard.receiveAttack(coord);
 		expect(() => gameboard.receiveAttack([1, 1])).toThrow();
 	});
+
+	it(
+		"updates hitstatus of corresponding squares" +
+			" to 'sunk' once ship has been sunk",
+		() => {
+			let gameboard = buildGameboard(10, 10);
+			let shipCoords = [
+				[0, 0],
+				[0, 1],
+				[0, 2],
+			];
+			gameboard.placeShip(shipCoords);
+			for (let coord of shipCoords) gameboard.receiveAttack(coord);
+			for (let [x, y] of shipCoords)
+				expect(gameboard.boardState[x][y].hitStatus).toBe("sunk");
+		}
+	);
 });
 
 describe("player", () => {
@@ -451,9 +468,9 @@ describe("game loop", () => {
 		const secondPlayerEndboard = new Array(20)
 			.fill(null)
 			.map(() => new Array(20).fill(null));
-		secondPlayerEndboard[0][0] = "hit";
-		secondPlayerEndboard[1][0] = "hit";
-		secondPlayerEndboard[2][0] = "hit";
+		secondPlayerEndboard[0][0] = "sunk";
+		secondPlayerEndboard[1][0] = "sunk";
+		secondPlayerEndboard[2][0] = "sunk";
 		expect(
 			game.secondPlayer.gameboard.boardState.map((column) =>
 				column.map((square) => square.hitStatus)
@@ -496,9 +513,9 @@ describe("game loop", () => {
 		const secondPlayerEndboard = new Array(20)
 			.fill(null)
 			.map(() => new Array(20).fill(null));
-		secondPlayerEndboard[0][0] = "hit";
-		secondPlayerEndboard[1][0] = "hit";
-		secondPlayerEndboard[2][0] = "hit";
+		secondPlayerEndboard[0][0] = "sunk";
+		secondPlayerEndboard[1][0] = "sunk";
+		secondPlayerEndboard[2][0] = "sunk";
 		expect(
 			game.secondPlayer.gameboard.boardState.map((column) =>
 				column.map((square) => square.hitStatus)
@@ -576,9 +593,9 @@ describe("game loop", () => {
 		const firstPlayerEndboard = new Array(20)
 			.fill(null)
 			.map(() => new Array(20).fill(null));
-		firstPlayerEndboard[0][2] = "hit";
-		firstPlayerEndboard[0][3] = "hit";
-		firstPlayerEndboard[0][4] = "hit";
+		firstPlayerEndboard[0][2] = "sunk";
+		firstPlayerEndboard[0][3] = "sunk";
+		firstPlayerEndboard[0][4] = "sunk";
 		firstPlayerEndboard[19][3] = "miss";
 		firstPlayerEndboard[11][15] = "hit";
 		firstPlayerEndboard[12][15] = "hit";
@@ -591,13 +608,13 @@ describe("game loop", () => {
 		const secondPlayerEndboard = new Array(20)
 			.fill(null)
 			.map(() => new Array(20).fill(null));
-		secondPlayerEndboard[0][0] = "hit";
-		secondPlayerEndboard[1][0] = "hit";
-		secondPlayerEndboard[2][0] = "hit";
-		secondPlayerEndboard[16][19] = "hit";
-		secondPlayerEndboard[17][19] = "hit";
-		secondPlayerEndboard[18][19] = "hit";
-		secondPlayerEndboard[19][19] = "hit";
+		secondPlayerEndboard[0][0] = "sunk";
+		secondPlayerEndboard[1][0] = "sunk";
+		secondPlayerEndboard[2][0] = "sunk";
+		secondPlayerEndboard[16][19] = "sunk";
+		secondPlayerEndboard[17][19] = "sunk";
+		secondPlayerEndboard[18][19] = "sunk";
+		secondPlayerEndboard[19][19] = "sunk";
 		expect(
 			game.secondPlayer.gameboard.boardState.map((column) =>
 				column.map((square) => square.hitStatus)
