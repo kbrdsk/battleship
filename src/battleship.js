@@ -86,7 +86,76 @@ function updateSunkShips() {
 
 const attackFunctions = {
 	human: () => (coords) => coords,
-	defaultAI: (boardState) => {
+	defaultAI: aiAttack,
+};
+
+const shipLocationGenerators = {
+	human: () => {},
+	defaultAI: aiShipLocationGenerator,
+};
+
+function createPlayer(playerType, playerName) {
+	return {
+		playerName,
+		playerType,
+		launchAttack: attackFunctions[playerType],
+		generateShipLocations: shipLocationGenerators[playerType],
+	};
+}
+
+//ai functions
+
+const adjacentDirections = [
+	[1, 0],
+	[0, -1],
+	[-1, 0],
+	[0, 1],
+];
+
+function aiAttack(boardState) {
+	let multiHitFollowUp, oneHitFollowUp, isolatedSquare, defaultGuess;
+	boardState.map((column, x) =>
+		column.map((square, y) => {
+			if (square.hitStatus === null) {
+				defaultGuess = [x, y];
+				const adjacentStatuses = scanAdjacentSquares(boardState, x, y);
+				if (adjacentStatuses.every((status) => status === null))
+					isolatedSquare = [x, y];
+				else
+					adjacentStatuses.map((status, directionIndex) => {
+						if (status === "hit") {
+							oneHitFollowUp = [x, y];
+							const [xDelta, yDelta] = adjacentDirections[
+								directionIndex
+							];
+							if (
+								boardState[x + xDelta] &&
+								boardState[x + xDelta][y + yDelta] &&
+								boardState[x + xDelta][y + yDelta].hitStatus ===
+									"hit"
+							)
+								multiHitFollowUp = [x, y];
+						}
+					});
+			}
+		})
+	);
+	const attackCoords =
+		multiHitFollowUp || oneHitFollowUp || isolatedSquare || defaultGuess;
+	return () => attackCoords;
+}
+
+function scanAdjacentSquares(boardState, x, y) {
+	const adjacentStatuses = [];
+	for (let [i, j] of adjacentDirections) {
+		if (!boardState[x + i]) adjacentStatuses.push("OOB");
+		else if (!boardState[x + i][y + j]) adjacentStatuses.push("OOB");
+		else adjacentStatuses.push(boardState[x + i][y + j].hitStatus);
+	}
+	return adjacentStatuses;
+}
+
+/*function aiAttack(boardState){
 		let xCoord = boardState.findIndex((column) =>
 			column.some((square) => !square.hitStatus)
 		);
@@ -94,37 +163,34 @@ const attackFunctions = {
 			(square) => !square.hitStatus
 		);
 		return () => [xCoord, yCoord];
-	},
-};
 
-const shipLocationGenerators = {
-	human: () => {},
-	defaultAI: ([width, height]) => {
-		const shipLocations = [];
-		for (let length of [5, 4, 3, 3, 2]) {
-			const validLocations = findValidShipLocations(
-				width,
-				height,
-				length,
-				shipLocations
-			);
-			const direction = Math.floor(Math.random() * 2);
-			const directionName = ["horizontal", "vertical"][direction];
-			const locationIndex = Math.floor(
-				Math.random() * validLocations[directionName].length
-			);
-			const start = validLocations[directionName][locationIndex];
-			const location = [];
-			for (let i = 0; i < length; i++) {
-				const coordinate = [...start];
-				coordinate[direction] += i;
-				location.push(coordinate);
-			}
-			shipLocations.push(location);
+}*/
+
+function aiShipLocationGenerator([width, height]) {
+	const shipLocations = [];
+	for (let length of [5, 4, 3, 3, 2]) {
+		const validLocations = findValidShipLocations(
+			width,
+			height,
+			length,
+			shipLocations
+		);
+		const direction = Math.floor(Math.random() * 2);
+		const directionName = ["horizontal", "vertical"][direction];
+		const locationIndex = Math.floor(
+			Math.random() * validLocations[directionName].length
+		);
+		const start = validLocations[directionName][locationIndex];
+		const location = [];
+		for (let i = 0; i < length; i++) {
+			const coordinate = [...start];
+			coordinate[direction] += i;
+			location.push(coordinate);
 		}
-		return shipLocations;
-	},
-};
+		shipLocations.push(location);
+	}
+	return shipLocations;
+}
 
 function findValidShipLocations(
 	boardWidth,
@@ -161,15 +227,6 @@ function findValidShipLocations(
 		}
 	}
 	return validShipLocations;
-}
-
-function createPlayer(playerType, playerName) {
-	return {
-		playerName,
-		playerType,
-		launchAttack: attackFunctions[playerType],
-		generateShipLocations: shipLocationGenerators[playerType],
-	};
 }
 
 //Game Loop

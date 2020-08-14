@@ -413,25 +413,38 @@ describe("game loop", () => {
 	it("game ends appropriately when ai wins as second player", () => {
 		const game = {};
 		const firstBoard = startGame(game);
-		const secondBoard = firstBoard("human", "Boyega", [20, 20], 1);
-		const placeFirst = secondBoard("defaultAI", "Alice", [20, 20], 1);
+		const secondBoard = firstBoard("human", "Boyega", [10, 10], 1);
+		const placeFirst = secondBoard("defaultAI", "Alice", [10, 10], 1);
 		const placeSecond = placeFirst([
 			[
-				[0, 2],
-				[0, 3],
-				[0, 4],
+				[1, 2],
+				[1, 3],
+				[1, 4],
 			],
 		]);
-		const turns = placeSecond([
+		let turns = placeSecond([
 			[
 				[0, 0],
 				[1, 0],
 				[2, 0],
 			],
 		]);
-		expect(turns([0, 0])()([1, 0])()([3, 0])()([1, 1])()([2, 2])()).toBe(
-			gameOver
-		);
+		let [x, y] = [0, 0];
+		let player = 1;
+		let turnCounter = 0;
+		while (turns !== gameOver) {
+			if (player === 1) {
+				x = (x + 1) % 10;
+				if (x === 0) y++;
+				turns = turns([x, y]);
+			} else turns = turns();
+			player *= -1;
+			turnCounter++;
+		}
+		expect(turnCounter < 199).toBe(true);
+		expect(
+			game.firstPlayer.gameboard.shipList.every((ship) => ship.isSunk)
+		).toBe(true);
 	});
 	it("simple game human vs human", () => {
 		const game = {};
@@ -499,7 +512,7 @@ describe("game loop", () => {
 		]);
 		expect(turns([0, 0])()([1, 0])()([2, 0])).toBe(gameOver);
 
-		const firstPlayerEndboard = new Array(20)
+		/*const firstPlayerEndboard = new Array(20)
 			.fill(null)
 			.map(() => new Array(20).fill(null));
 		firstPlayerEndboard[0][0] = "miss";
@@ -508,7 +521,7 @@ describe("game loop", () => {
 			game.firstPlayer.gameboard.boardState.map((column) =>
 				column.map((square) => square.hitStatus)
 			)
-		).toEqual(firstPlayerEndboard);
+		).toEqual(firstPlayerEndboard);*/
 
 		const secondPlayerEndboard = new Array(20)
 			.fill(null)
