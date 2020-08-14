@@ -30,7 +30,8 @@ let viewingPlayer, opponent;
 function updateView() {
 	document.body.innerHTML = "";
 	document.body.setAttribute("phase", adapter.phase);
-	opponent = viewingPlayer;
+	opponent =
+		adapter.activePlayer === "firstPlayer" ? "secondPlayer" : "firstPlayer";
 	viewingPlayer = adapter.activePlayer;
 	draw[adapter.phase]();
 	console.log(adapter.phase);
@@ -175,9 +176,7 @@ function updateTurnView(board) {
 		column.map((boardSquare, y) => {
 			boardSquare.setAttribute(
 				"hit-status",
-				adapter.gameState[opponent].gameboard.boardState[x][
-					y
-				].hitStatus
+				adapter.gameState[opponent].gameboard.boardState[x][y].hitStatus
 			);
 			/*if(adapter.gameState[adapter.activePlayer].gameboard.boardState[x][y].ship !== nullShip)
 			boardSquare.classList.add("ship-indicator");*/
@@ -190,7 +189,9 @@ function updateTurnView(board) {
 }
 
 function drawGameOver() {
-	alert(`Game Over!\n` + `${adapter.gameState[viewingPlayer].playerName} wins!`);
+	alert(
+		`Game Over!\n` + `${adapter.gameState[viewingPlayer].playerName} wins!`
+	);
 	document.body.appendChild(newGameButton);
 }
 
