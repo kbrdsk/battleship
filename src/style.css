@@ -49,3 +49,7 @@ body[phase=shipPlacement] .ship-indicator{
 .board-square[hit-status=hit]{
 	background-color: red;
 }
+
+.board-square[hit-status=sunk]{
+	background-color: black;
+}
