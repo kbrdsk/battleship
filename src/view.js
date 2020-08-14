@@ -25,9 +25,13 @@ const draw = {
 	gameOver: drawGameOver,
 };
 
+let viewingPlayer, opponent;
+
 function updateView() {
 	document.body.innerHTML = "";
 	document.body.setAttribute("phase", adapter.phase);
+	opponent = viewingPlayer;
+	viewingPlayer = adapter.activePlayer;
 	draw[adapter.phase]();
 	console.log(adapter.phase);
 }
@@ -171,7 +175,7 @@ function updateTurnView(board) {
 		column.map((boardSquare, y) => {
 			boardSquare.setAttribute(
 				"hit-status",
-				adapter.gameState[adapter.activePlayer].gameboard.boardState[x][
+				adapter.gameState[opponent].gameboard.boardState[x][
 					y
 				].hitStatus
 			);
@@ -186,9 +190,7 @@ function updateTurnView(board) {
 }
 
 function drawGameOver() {
-	const winner =
-		adapter.activePlayer === "firstPlayer" ? "secondPlayer" : "firstPlayer";
-	alert(`Game Over!\n` + `${adapter.gameState[winner].playerName} wins!`);
+	alert(`Game Over!\n` + `${adapter.gameState[viewingPlayer].playerName} wins!`);
 	document.body.appendChild(newGameButton);
 }
 

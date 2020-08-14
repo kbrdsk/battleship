@@ -141,7 +141,7 @@ function submitAttack(x, y) {
 	try {
 		if (turn(gameState, gameState[activePlayer], [x, y]) === gameOver)
 			gameFunction = gameOver;
-		activePlayer =
+		else activePlayer =
 			activePlayer === "firstPlayer" ? "secondPlayer" : "firstPlayer";
 	} catch (err) {
 		if (
