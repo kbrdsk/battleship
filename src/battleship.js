@@ -127,7 +127,7 @@ function aiAttack(boardState) {
 							oneHitFollowUp = [x, y];
 							const [xDelta, yDelta] = adjacentDirections[
 								directionIndex
-							];
+							].map((delta) => 2 * delta);
 							if (
 								boardState[x + xDelta] &&
 								boardState[x + xDelta][y + yDelta] &&
