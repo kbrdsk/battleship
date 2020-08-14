@@ -114,14 +114,40 @@ const adjacentDirections = [
 
 function aiAttack(boardState) {
 	let multiHitFollowUp, oneHitFollowUp, isolatedSquare, defaultGuess;
+	let maxIsolation = 1;
 	boardState.map((column, x) =>
 		column.map((square, y) => {
 			if (square.hitStatus === null) {
 				defaultGuess = [x, y];
 				const adjacentStatuses = scanAdjacentSquares(boardState, x, y);
-				if (adjacentStatuses.every((status) => status === null))
-					isolatedSquare = [x, y];
-				else
+				if (adjacentStatuses.some((status) => status === null)) {
+					const openSquares = adjacentStatuses.map(
+						(status, directionIndex) => {
+							const [xDelta, yDelta] = adjacentDirections[
+								directionIndex
+							];
+							let isolationIndex = 1;
+							let [checkX, checkY] = [x, y];
+							while (
+								boardState[checkX + xDelta] &&
+								boardState[checkX + xDelta][checkY + yDelta] &&
+								boardState[checkX + xDelta][checkY + yDelta]
+									.hitStatus === null
+							) {
+								isolationIndex++;
+								checkX += xDelta;
+								checkY += yDelta;
+							}
+							return isolationIndex;
+						}
+					);
+					const isolation = openSquares.reduce((n, m) => n * m);
+					if (isolation > maxIsolation) {
+						maxIsolation = isolation;
+						isolatedSquare = [x, y];
+					}
+				}
+				if (adjacentStatuses.some((status) => status === "hit")) {
 					adjacentStatuses.map((status, directionIndex) => {
 						if (status === "hit") {
 							oneHitFollowUp = [x, y];
@@ -137,6 +163,7 @@ function aiAttack(boardState) {
 								multiHitFollowUp = [x, y];
 						}
 					});
+				}
 			}
 		})
 	);
